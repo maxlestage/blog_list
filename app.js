@@ -1,11 +1,11 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const middleware = require("./utils/middleware");
+const blogRouter = require("./controllers/blog");
 const mongoose = require("mongoose");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
-
-const mongoUrl = "mongodb://localhost/bloglist";
 
 logger.info("connecting to", config.MONGODB_URI);
 
@@ -15,15 +15,21 @@ mongoose
     logger.info("connected to MongoDB");
   })
   .catch((error) => {
-    logger.error("error connecting to MongoDB:", error.message);
+    logger.error("error connection to MongoDB:", error.message);
   });
 
 app.use(cors());
 app.use(express.json());
 
-const PORT = 3003;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.use(middleware.requestLogger);
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
-module.exports = app;
+app.use("/api", blogRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
+
+module.exports.app;
