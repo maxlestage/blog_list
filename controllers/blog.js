@@ -2,21 +2,21 @@ const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 
 blogRouter.get("/test", (request, response) => {
-  response.send("Hello World!");
+    response.send("Hello World!");
 });
 
 blogRouter.get("/blogs", (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
+    Blog.find({}).then((blogs) => {
+        response.json(blogs);
+    });
 });
 
 blogRouter.post("/blogs", (request, response) => {
-  const blog = new Blog(request.body);
+    const blog = new Blog(request.body);
 
-  blog.save().then((result) => {
-    response.status(201).json(result);
-  });
+    blog.save().then((result) => {
+        response.status(201).json(result);
+    });
 });
 
 module.exports = blogRouter;
